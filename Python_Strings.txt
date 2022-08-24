@@ -1,0 +1,192 @@
+# Control Statements
+
+syntax:
+if condition and cond2 or cond3:
+    stamt2
+    stmnt2
+    stmnt3
+elif cond4:
+    stmt5
+    stmnt6
+elif cond5:
+    stmnt
+else:
+    stmt
+---------------------------------------------------------------------
+x=-4
+
+if x>0 and x<10:
+    print('Single digit value')
+elif x>=10 and x<100:
+    print('Double digit value')
+elif x>=100 and x<1000:
+    print('Triple digit value')
+else:
+    print('Either it is a negative value of four digit number')
+	
+---------------------------------------------------------------------
+
+name=input('Enter your name:')
+print("Your name :", name)
+
+age=int(input("Enter your age:"))
+age=age+1
+print(f"Age is :{age}")
+
+------------------------------------------------------------------------
+
+country=input('Enter your country name : ')
+age = int(input('Enter your age : '))
+
+if country == "India":
+    if age >= 18:
+        print("You can vote")
+    else:
+        print("You can't vote")
+else:
+    print(f"Please follow {country} country standards")
+-------------------------------------------------------------------------
+# while loop
+
+x=0
+
+while x<=10:
+    print(x)
+    x=x+1
+else:
+    print("value of the variable x is : ", x)
+----------------------------------------------------------------------------
+# break and continue
+
+x=0
+while x<=10:
+    if x==5:
+        break
+    print(x)
+    x=x+1
+print('Line next to the loop')
+print('Not part of the loop')
+----------------------------------------------------------------------------
+# break and continue
+
+x=0
+while x<=10:
+    x=x+1
+    if x==5:
+        continue
+    print(x)
+    
+print('Line next to the loop')
+print('Not part of the loop')
+----------------------------------------------------------------------
+# FOR LOOP
+
+city=['Chennai','Bangalore','Hyderabad','Pune','Delhi']
+for x in city:
+    print(x)
+	
+for x in range(1,11):
+    print("{}+2={}".format(x,x+2))
+
+----------------------------------------------------------------------------
+
+'''
+DATA STRUCTURE
+    - Immutable
+        Numbers
+        Strings
+        Tuple
+    - Mutable
+        List
+        Dictionary
+        Set
+'''
+
+-------------------------------------------------------------------------------
+name='Raghul Ramesh'
+type(name)
+len(name)
+name[0]
+name[1]
+name[2]
+name[-1]
+name[-2]
+name[7:13]
+name[0:6]
+name[:6]
+name[7:]
+
+print(dir(name))
+
+name.upper()
+name.lower()
+name.swapcase()
+
+name="raghul ramesh"
+name.title()
+name.capitalize()
+
+name='Raghul Ramesh'
+name.casefold()
+name.istitle()
+name.isupper()
+name.islower()
+name.isalpha()
+
+city="Chennai"
+city.isalpha()
+city.isdecimal()
+
+age="37"
+age.isdecimal()
+age.isnumeric()
+
+
+empid="SC1490761"
+empid.isalnum()
+empid.isascii()
+
+# find and index
+name
+name.find('a')
+name.rfind('a')
+name.find('Ram')
+name.find('z')
+name.index('a')
+name.rindex('a')
+name.index('Ram')
+name.index('z')
+
+
+# center, ljust, rjust
+name
+name.center(20)
+name.center(20,'.')
+name.center(20,'-')
+name.center(20,'_')
+
+name.ljust(20)
+name.ljust(20,'=')
+
+name.rjust(20)
+name.ljust(20,'$')
+
+# strip, lstrip, rstrip
+name='    Raghul Ramesh     '
+name.strip()
+name
+name.lstrip()
+name.rstrip()
+
+
+# split
+City='Chennai-Bangalore-Pune-Hyderabad-Mumbai'
+
+for x in City.split('-'):
+    print(x)
+	
+city="Chennai is part of Tamilnadu \n Bangalore is the city for IT companies \nPune is part of Mharastra \nMumbai"
+city.splitlines()
+
+
+
