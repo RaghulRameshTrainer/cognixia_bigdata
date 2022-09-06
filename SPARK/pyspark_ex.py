@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType,StructField,StringType,IntegerType
+from reusable import age_category
 spark=SparkSession.builder.appName('Cognixia Training').getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 
@@ -82,7 +83,7 @@ filleddf=spark.sql(""" SELECT custid, fname, lname ,age, case
                     FROM customer""")
 filleddf.createOrReplaceTempView("updated_customer")
 spark.sql("""SELECT * FROM updated_customer WHERE profession='UNKNOWN'""").show(100)
-from pyspark.sql.functions import col
+from pyspark.sql.functions import udf
 finaldf=custdf.na.fill({'profession':"MISSING"})
 finaldf.createOrReplaceTempView("cust_tbl1")
 # spark.sql("""SELECT count(1) FROM cust_tbl1
@@ -109,4 +110,65 @@ updtdf.createOrReplaceTempView("cust_updt_tbl")
 
 # uniquedf=finaldf.distinct()
 # print("Total number of unique records :",uniquedf.count())
+from pyspark.sql.functions import col,lit,concat
+custdf2=custdf.\
+    withColumnRenamed("fname","first_name").\
+    withColumnRenamed("lname","last_name").\
+    withColumn("Typeofdata",lit("CustInfo")).\
+    withColumn("fullname",concat(col("first_name"),lit(" "),col("last_name"))).\
+    withColumn("Stringage",col("age").cast("String")) .\
+    drop(*("first_name","last_name","age"))
+#custdf2.printSchema()
+custdf2.createOrReplaceTempView("customer_data")
+#spark.sql("SELECT custid,fullname,Stringage,profession,Typeofdata FROM customer_data LIMIT 5").show(truncate=False)
 
+#custdf2.sort(col("Stringage").desc()).show(5,False)
+
+# spark.sql("""SELECT custId,profession,'CustInfo' as Typeofdata,
+#             concat(fname,' ',lname) as fullname , cast(age as string) as Stringage
+#             from customer
+#             order by Stringage desc
+#             limit 5""").show()
+
+#spark.udf.register("cal_age_category",age_category,StringType())
+spark.udf.register("myfunc",age_category,IntegerType())
+# spark.sql("SELECT * FROM customer LIMIT 5").show(5,False)
+spark.sql("""SELECT custId,profession,concat(fname,' ',lname) as fullname,
+                    age,case
+                    WHEN age <= 40 THEN 'Junior'
+                    else 'Senior' END as category
+                    from customer""").show(5,False)
+srprofessions=spark.sql("""SELECT custId, profession,age,fullname FROM 
+(SELECT custId, profession,concat(fname,' ',lname) as fullname,age,
+            row_number() OVER (partition by profession order by age desc) row_num
+            FROM customer) t
+            WHERE t.row_num<=3
+            ORDER BY profession """)
+
+srprofessions.coalesce(1).write.mode("overwrite").\
+    csv(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprofessions")
+
+srprofessions.coalesce(1).write.mode("overwrite") \
+    .format("json").\
+    save(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprof_json")
+
+srprofessions.coalesce(1).write.mode("overwrite") \
+    .format("orc").\
+    save(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprof_orc")
+
+srprofessions.coalesce(1).write.mode("overwrite") \
+    .format("parquet").\
+    save(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprof_parquet")
+
+# srprofessions.coalesce(1).write.mode("overwrite") \
+#     .format("avro").\
+#     save(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprof_avro")
+
+par_df=spark.read.parquet(r"C:\spark\spark-3.0.3-bin-hadoop2.7\data\output\srprof_parquet\*")
+
+par_df.show(10)
+
+* SPARK WORK MUCH BETTER/FASTER WITH PARQUET FILE FORMAT
+* HIVE WORK MUCH BETTER/FASTER WITH ORC FILE FORMAT
+
+-- SURVEY
