@@ -1,0 +1,158 @@
+1. What is SparkSession/sparkContext?	
+			Entry point for spark framework
+2. What is RDD and What are the ways to create a RDD?
+		Resilient Distributed Dataset (immutable dataset)
+		1. By reading a file
+		2. Applying transformation on another RDD
+		3. Programmatically ( using sc.parallelize function)
+3. What is map and flat map?
+		Both are the transformation
+		map will return the same number of lines as an output 
+			line="Chennai-Bangalore-Hyderabad"
+			line.flatMap(lambda city : city.split("-"))
+			List(Chennai,	Bangalore,	Hyderabad)
+
+		flatMap ( return multiple lines of output)
+		Ex:
+			line="Chennai-Bangalore-Hyderabad"
+			line.flatMap(lambda city : city.split("-"))
+			Chennai
+			Bangalore
+			Hyderabad
+	
+4. diff b/w map and mapPartitions?
+			1000 lines of records which is stored as 10 partition. assume each partition consists 
+				of 100 line
+
+			rdd.map(lambda x: (x(0),x(1)))  # read the data 1000 times
+			rdd.mapPartitions(lambda x: (x(0),x(1)))
+5. How do you convert the RDD to DF?
+		Two days:
+			df=rdd.toDF(["Name","Age"])
+			df=spark.createDataFrame(rdd)
+6. When do you go for Hadoop programming and Spark programming?
+		Hadoop 															Spark
+	Batch Processing											Both Batch and Streaming Processing
+		-															Does memory processing
+		Slower													10 - 100x faster than Hadoop processing
+	less expense												More expense
+7. How do you create a DF on top of a file?
+		spark.read.format("csv").option("header",True).option("inferSchema",True).\
+				load("file_location")
+
+8. Difference between RDD and DF?
+
+		If the data is structured data then i go for DF else RDD
+
+9. What are the different mode that you have used in df creation options?
+		dropmalformed
+		permissive
+		failfast
+	DEFAULT mode is permissive
+
+10. How do you remove the rows for it contains null in particular 2 coulmn?
+	df.na.drop(subset=["col1","col2"])
+
+12.What are the spark joins we have?
+	broadCastJoin (<=10MB)
+	sortMergeJoin  ( DEFAULT)
+	Shuffle join
+13.What is the default value of spark.sql.shuffle.partitions?
+	200
+
+14. What is the diff between coalesce and repartition?
+		coalesce avoids data shuffling
+15. How do you check the partition count for a df?
+		df.rdd.getNumPartitions
+16. What is the diff between cache/persist?
+	cache -> to store data in memory
+	persist -> level 
+	checkpoint ( IS FOR STORING THE OFFSET VALUE)
+
+17.how do you write the data into HDFS as a single file?
+	df.coalesce(1).write.mode("append").save("location")
+
+
+18. What are the optimization technique you will be applying/following when you work on spark develoment?
+	1. Serialization ( Kyro )
+	2. Cache / Persist
+	3. DF api ( than RDD)
+	4. Use accumulator , broadCast Variable
+	5. Control the no of partitions ( spark.sql.shuffle.partitions)
+	6. Go for broadCast join if possible
+	7. Predictive Pushdown , projective pushdown approach
+	8. *** USE parquet format
+	
+19. Difference b/w ORC and PARQUET format?
+		both are columnar storage
+		ORC fits for HIVE operations  (1TB -> 0.3TB)
+		PARQUEST is for Spark Operations (1TB -> 0.4TB)
+20. What are the different file format that you have handled/processed?
+		orc, json, parquet, csv, txt
+
+21.How do you add/rename a column?
+	using withColumn (addition)
+			withColumnRenamed(Renaming)
+		
+	I prefer to go with SQL way of handling
+
+=================================================================
+
+1. What are the different types of table we have?
+		Managed/Internal Table
+		Extenernal Table
+
+2. Diff b/w managed and external table?
+		When we drop the table
+			@managed -> Both table and data gets dropped
+			@external -> only table schema gets dropped
+		Managed table is kind of the staging table
+			For final table i always go with external table
+
+		Location should be mentioned in DDL while creating External table whereas it is optional
+		inpalce of internal table
+
+		External users can access external table 
+
+3. What is static and dynamic partition?
+		
+		if i know the the partition column value i go with static partition. if i dont know the 
+values that i go for dynamic partition
+		for static partition data can be loaded using LOAD DATA LOCAL INPATH
+		for Dynamic Partition we have load using INSERT INTO <table> SELECT * FROM other_table city
+chennai
+bangalore
+hyderabad
+pune
+delhi
+mumbi
+kolkatta
+
+exL if we get the data for chennai city alone.
+LOAD DATA LOCAL INPATH 'location' INTO TABLE transaction PARTITION(city="Chennai")	
+
+
+4. What are the optimization techniques?
+	
+		set hive.vectorized.execution.enabled = true;
+		partitions, bucket
+
+5. diff b/w partitions and bucket?
+		if the column has less cordinal value then i go for partition
+		high cordinal ( more unique ) i go for bucket
+
+6. Can you show me how do you create a table with partitions? or buckets or both?
+
+		CREATE TABLE customer(custid INT, name STRING, city STRING)
+		PARTITIONED BY ( category STRING)
+		CLUSTERED By (city) SORTED BY (city DESC)
+		row format delimited fields terminated by ','
+		stored as ORC ;
+
+=================================================================
+
+									KAFKA		
+1.Can you please explain about KAFKA architecture?
+
+		brokers, topics, partitions, replication-factor, consumer, producer, bookstrap server
+
