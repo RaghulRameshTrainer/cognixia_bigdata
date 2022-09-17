@@ -156,3 +156,54 @@ LOAD DATA LOCAL INPATH 'location' INTO TABLE transaction PARTITION(city="Chennai
 
 		brokers, topics, partitions, replication-factor, consumer, producer, bookstrap server
 
+
+===============PYTHON===============================================
+
+1.diff b/w list & tuple?
+List 	                                    Tuple
+Mutable									        Immutable
+[]														()
+Consumes more memory								Less
+Take more time to process						Less Time
+
+2.diff b/w append & extend?
+  append is used to add a single value at the end of the list
+	extend can be used to add more at a time
+
+3.diff b/w shallow & deep copy?
+4.What is the scope of a variable in python function?
+	local and global
+5. What are the diff types of paramenters we have in python function?
+		mandatory 
+		optional/default
+		*args
+		**args
+6. What is lambda function?
+res=lambda a,b,c : max([a,b,c])
+res1=lambda a,b,c: a if a>b and a>c else b if b>a and b>c else c
+
+7.how do you process the json data?
+	using json library  ( load,dump)
+
+8. DB operations:
+			select:
+					fetchone,fetchmany,fetchall
+9.how do you handle the exceptions in python?
+	try...except
+
+10.how do throw your own exception?
+	using raise
+
+11.how you write the output of a program into a logfile?
+		using logging library
+
+12.regular expression:
+
+13. oops
+		What is inheritance?
+		What is super()
+		What is method overloading, overriding?
+		How do you create public, protected and private variables?
+		What are the different types of the method that we can create in a class?
+		
+
